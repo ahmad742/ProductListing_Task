@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { useCart, Product } from '@context/CartContext';
 import { useFavorites } from '@context/FavoritesContext';
 import Toast from 'react-native-toast-message';
 import { styles } from './styles';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type RootStackParamList = {
   ProductDetails: { product: Product };
@@ -24,6 +25,7 @@ const COLORS = ['#E57373', '#64B5F6', '#FFB74D'];
 
 export const ProductDetailsScreen = () => {
   const route = useRoute<ProductDetailsScreenRouteProp>();
+  const navigation = useNavigation();
   const { product } = route.params;
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState('M');
@@ -65,6 +67,12 @@ export const ProductDetailsScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView bounces={false}>
         <View style={styles.imageContainer}>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
           <Image source={{ uri: product.image }} style={styles.image} />
           <TouchableOpacity 
             style={[
