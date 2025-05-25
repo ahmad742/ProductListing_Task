@@ -14,6 +14,8 @@ import ProductCard from '../../components/ProductCard';
 import { Product } from '@context/CartContext';
 import { productsApi } from '../../api/calls';
 import { styles } from './styles';
+import { NoInternet } from '../../components/NoInternet';
+import { useNetwork } from '../../context/NetworkContext';
 
 export const HomeScreen = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,6 +23,7 @@ export const HomeScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
+  const { isConnected } = useNetwork();
   
   // Animation values
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -28,7 +31,7 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [isConnected]); // Re-fetch when connection status changes
 
   useEffect(() => {
     if (!loading) {
@@ -49,6 +52,12 @@ export const HomeScreen = () => {
   }, [loading]);
 
   const loadProducts = async () => {
+    if (!isConnected) {
+      setError('No internet connection');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await productsApi.getAllProducts();
       setProducts(response.data);
@@ -76,14 +85,8 @@ export const HomeScreen = () => {
     );
   }
 
-  if (error) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.centered}>
-          <Text style={styles.error}>{error}</Text>
-        </View>
-      </SafeAreaView>
-    );
+  if (!isConnected || error) {
+    return <NoInternet onRetry={loadProducts} />;
   }
 
   const renderItem = ({ item, index }: { item: Product; index: number }) => {

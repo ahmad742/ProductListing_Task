@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '../screens/Home';
 import { CartScreen } from '../screens/Cart';
 import { FavoritesScreen } from '../screens/Favorites';
-import { ProfileScreen } from '../screens/Profile';
 import { AnimatedTabBar } from '../components/AnimatedTabBar';
 
 const Tab = createBottomTabNavigator();
@@ -27,10 +26,6 @@ export function TabNavigator() {
       <Tab.Screen 
         name="Favorites" 
         component={FavoritesScreen}
-      />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen}
       />
     </Tab.Navigator>
   );
